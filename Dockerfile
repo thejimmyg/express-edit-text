@@ -11,8 +11,8 @@ FROM base
 
 COPY --from=builder /app /app
 COPY bin/ /app/bin/
+RUN mkdir -p /app/editable/
 COPY views/ /app/views/
-COPY lib/ /app/lib/
 COPY public/ /app/public/
 WORKDIR /app
 EXPOSE 9005

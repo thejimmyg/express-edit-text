@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "Edit text files in a directory",
   "scripts": {
-    "docker:build": "docker build . -t docker.jimmyg.org/express-edit-text:latest",
-    "docker:push": "docker push docker.jimmyg.org/express-edit-text:latest",
-    "docker:run": "docker run -e PORT=9006 -e SECRET='reallysecret' --init -p 9006:9006 docker.jimmyg.org/express-edit-text:latest",
+    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.0",
+    "docker:push": "docker push thejimmyg/express-edit-text:0.1.0",
+    "docker:run": "docker run -e PORT=9006 -e SECRET='reallysecret' -v \"`pwd`/editable:/app/editable:rw\" --init -p 9006:9006 express-edit-text:latest",
     "start": "node bin/server.js",
     "fix": "standard --fix index.js bin/*.js lib/*.js"
   },

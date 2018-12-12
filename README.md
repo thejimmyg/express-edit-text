@@ -7,7 +7,7 @@ outside the development team yet.**
 
 ```
 npm install
-DEBUG=express-edit-text DIR=editable PORT=9006 DEBUG=express-edit-text npm start
+SCRIPT_NAME=/ DEBUG=express-edit-text DIR=editable PORT=9006 DEBUG=express-edit-text npm start
 ```
 
 Visit http://localhost:9006.
@@ -15,7 +15,7 @@ Visit http://localhost:9006.
 To use it in conjunction with express-mustache-jwt-signin:
 
 ```
-DEBUG=express-edit-text DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
+SCRIPT_NAME=/ DEBUG=express-edit-text DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
 ```
 
 You should be able to make requests to routes restricted with `signedIn`
