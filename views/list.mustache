@@ -1,0 +1,10 @@
+{{>top}}
+      <div class="p-3 flex-grow-1">
+        <h1>List</h1>
+        <ul>
+          {{#files}}
+          <li><a href="{{url}}">{{{name}}}<a></li>
+          {{/files}}
+        </ul>
+      </div>
+{{>bottom}}

@@ -1,0 +1,27 @@
+{
+  "name": "express-edit-text",
+  "version": "0.1.0",
+  "description": "Edit text files in a directory",
+  "scripts": {
+    "docker:build": "docker build . -t docker.jimmyg.org/express-edit-text:latest",
+    "docker:push": "docker push docker.jimmyg.org/express-edit-text:latest",
+    "docker:run": "docker run -e PORT=9006 -e SECRET='reallysecret' --init -p 9006:9006 docker.jimmyg.org/express-edit-text:latest",
+    "start": "node bin/server.js",
+    "fix": "standard --fix index.js bin/*.js lib/*.js"
+  },
+  "author": "JimmyG",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^4.1.0",
+    "express": "^4.16.4",
+    "express-mustache-jwt-signin": "^0.2.2",
+    "shelljs": "^0.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:thejimmyg/express-edit-text.git"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
+  }
+}
