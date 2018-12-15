@@ -19,8 +19,15 @@ if (!editableDir) {
   throw new Error('No DIR environment variable set to specify the path of the editable files.')
 }
 const secret = process.env.SECRET
+if (!secret || secret.length < 8) {
+  throw new Error('No SECRET environment variable set, or the SECRET is too short. Need 8 characters')
+}
 const mustacheDirs = process.env.MUSTACHE_DIRS ? process.env.MUSTACHE_DIRS.split(':') : []
 mustacheDirs.push(path.join(__dirname, '..', 'views'))
+const signInURL = process.env.SIGN_IN_URL
+if (!signInURL) {
+  throw new Error('No SIGN_IN_URL environment variable set')
+}
 
 const main = async () => {
   const app = express()
@@ -29,7 +36,7 @@ const main = async () => {
   const templateDefaults = { title: 'Title', scriptName, signOutURL: '/user/signout', signInURL: '/user/signin' }
   await setupMustache(app, templateDefaults, mustacheDirs)
 
-  const {signedIn, withUser, hasClaims } = setupMiddleware(secret)
+  const {signedIn, withUser, hasClaims } = setupMiddleware(secret, {signInURL})
   app.use(withUser)
 
   app.use(bodyParser.urlencoded({ extended: true }))

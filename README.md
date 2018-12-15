@@ -7,7 +7,7 @@ outside the development team yet.**
 
 ```
 npm install
-SCRIPT_NAME=/ DEBUG=express-edit-text,express-mustache-jwt-signin DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
+SIGN_IN_URL=/user/signin SCRIPT_NAME=/ DEBUG=express-edit-text,express-mustache-jwt-signin DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
 ```
 
 Visit http://localhost:9006.
@@ -26,7 +26,8 @@ both to `express-mustache-jwt-signin` and this module. Then you can use
 long as the `SECRET` environmrnt variables are the same.
 
 If you just enable `SECRET` but don't set up the proxy, you'll just get
-redirected to `/user/signin` and see a 404 page.
+redirected to the `SIGN_IN_URL` (set to `/user/signin` in the example) and see
+a 404 page.
 
 ## Development
 
@@ -44,6 +45,12 @@ npm run docker:run
 ```
 
 ## Changelog
+
+# 0.1.2 2018-12-15
+
+* Added a required `SIGN_IN_URL` for the example.
+* Added a `403.mustache` template
+* Fixed a `</p>` in `404.mustache`
 
 # 0.1.1 2018-12-15
 

@@ -1,10 +1,10 @@
 {
   "name": "express-edit-text",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Edit text files in a directory",
   "scripts": {
-    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.1",
-    "docker:push": "docker push thejimmyg/express-edit-text:0.1.1",
+    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.2",
+    "docker:push": "docker push thejimmyg/express-edit-text:0.1.2",
     "docker:build:test": "docker build . -t thejimmyg/express-edit-text:test",
     "docker:push:test": "docker push thejimmyg/express-edit-text:test",
     "docker:run": "docker run -e PORT=9006 -e SECRET='reallysecret' -v \"`pwd`/editable:/app/editable:rw\" --init -p 9006:9006 express-edit-text:latest",
