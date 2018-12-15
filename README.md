@@ -7,16 +7,10 @@ outside the development team yet.**
 
 ```
 npm install
-SCRIPT_NAME=/ DEBUG=express-edit-text DIR=editable PORT=9006 DEBUG=express-edit-text npm start
+SCRIPT_NAME=/ DEBUG=express-edit-text,express-mustache-jwt-signin DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
 ```
 
 Visit http://localhost:9006.
-
-To use it in conjunction with express-mustache-jwt-signin:
-
-```
-SCRIPT_NAME=/ DEBUG=express-edit-text DIR=editable PORT=9006 SECRET='reallysecret' DEBUG=express-edit-text npm start
-```
 
 You should be able to make requests to routes restricted with `signedIn`
 middleware as long as you have the cookie, or use the JWT in an `Authorization
@@ -50,6 +44,12 @@ npm run docker:run
 ```
 
 ## Changelog
+
+# 0.1.1 2018-12-15
+
+* Made mustacheDirs an array for correct reloading, and allow preferred overlays to be specified as `MUSTACHE_DIRS=viewsDir1:viewsDir2:viewsDir3` etc. The defaults in `views` will still be used last if a particular template or partial can't be found in the specified directories.
+* Support for `SCRIPT_NAME`
+* Default `DIR` value in Dockerfile
 
 ### 0.1.0 2018-12-12
 

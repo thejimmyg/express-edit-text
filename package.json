@@ -1,10 +1,12 @@
 {
   "name": "express-edit-text",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Edit text files in a directory",
   "scripts": {
-    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.0",
-    "docker:push": "docker push thejimmyg/express-edit-text:0.1.0",
+    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.1",
+    "docker:push": "docker push thejimmyg/express-edit-text:0.1.1",
+    "docker:build:test": "docker build . -t thejimmyg/express-edit-text:test",
+    "docker:push:test": "docker push thejimmyg/express-edit-text:test",
     "docker:run": "docker run -e PORT=9006 -e SECRET='reallysecret' -v \"`pwd`/editable:/app/editable:rw\" --init -p 9006:9006 express-edit-text:latest",
     "start": "node bin/server.js",
     "fix": "standard --fix index.js bin/*.js lib/*.js"
@@ -14,7 +16,8 @@
   "dependencies": {
     "debug": "^4.1.0",
     "express": "^4.16.4",
-    "express-mustache-jwt-signin": "^0.2.2",
+    "express-mustache-jwt-signin": "^0.2.4",
+    "express-mustache-overlays": "^0.1.4",
     "shelljs": "^0.8.3"
   },
   "repository": {

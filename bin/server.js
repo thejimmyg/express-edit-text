@@ -13,35 +13,24 @@ const readFileAsync = promisify(fs.readFile)
 const writeFileAsync = promisify(fs.writeFile)
 
 const port = process.env.PORT || 9005
-const scriptName = process.env.SCRIPT_NAME || '/'
+const scriptName = process.env.SCRIPT_NAME || ''
 const editableDir = process.env.DIR
 if (!editableDir) {
   throw new Error('No DIR environment variable set to specify the path of the editable files.')
 }
 const secret = process.env.SECRET
-const mustacheDirs = path.join(__dirname, '..', 'views')
+const mustacheDirs = process.env.MUSTACHE_DIRS ? process.env.MUSTACHE_DIRS.split(':') : []
+mustacheDirs.push(path.join(__dirname, '..', 'views'))
 
 const main = async () => {
   const app = express()
   app.use(cookieParser())
 
-  const templateDefaults = { title: 'Title', signOutURL: '/user/signout', signInURL: '/user/signin' }
+  const templateDefaults = { title: 'Title', scriptName, signOutURL: '/user/signout', signInURL: '/user/signin' }
   await setupMustache(app, templateDefaults, mustacheDirs)
 
-  let signedIn
-  if (secret && secret.length >= 8) {
-    debug('Using middleware using secret ' + secret)
-    const middlewares = setupMiddleware(secret, {})
-    signedIn = middlewares.signedIn
-    const withUser = middlewares.withUser
-    // Make req.user available to everything
-    app.use(withUser)
-  } else {
-    debug('Not using a signedIn function.')
-    signedIn = function (req, res, next) {
-      next()
-    }
-  }
+  const {signedIn, withUser, hasClaims } = setupMiddleware(secret)
+  app.use(withUser)
 
   app.use(bodyParser.urlencoded({ extended: true }))
   app.get(scriptName, signedIn, (req, res) => {
@@ -52,12 +41,12 @@ const main = async () => {
     }
     const files = []
     for (let filename of ls) {
-      files.push({ name: filename, url: scriptName + 'edit/' + encodeURIComponent(filename) })
+      files.push({ name: filename, url: scriptName + '/edit/' + encodeURIComponent(filename) })
     }
-    res.render('list', { user: req.user, title: 'List', files })
+    res.render('list', { user: req.user, scriptName, title: 'List', files })
   })
 
-  app.all(scriptName + 'edit/*', signedIn, async (req, res) => {
+  app.all(scriptName + '/edit/*', signedIn, hasClaims(claims => claims.admin), async (req, res) => {
     debug('Edit edit/* handler')
     const filename = req.params[0]
     const filePath = path.join(editableDir, filename)

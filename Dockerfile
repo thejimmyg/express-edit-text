@@ -11,6 +11,7 @@ FROM base
 
 COPY --from=builder /app /app
 COPY bin/ /app/bin/
+# You can mount your real `/app/editable` volume when running docker
 RUN mkdir -p /app/editable/
 COPY views/ /app/views/
 COPY public/ /app/public/
@@ -18,5 +19,6 @@ WORKDIR /app
 EXPOSE 9005
 ENV NODE_PATH=/app/node_modules
 ENV NODE_ENV=production
+ENV DIR=/app/editable/
 ENV PATH="${PATH}:/app/node_modules/.bin"
 CMD ["node", "bin/server.js"]
