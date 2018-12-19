@@ -5,7 +5,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY package.json /app
 COPY package-lock.json /app
-RUN npm install
+RUN npm install --only=prod
 
 FROM base
 
@@ -16,7 +16,7 @@ RUN mkdir -p /app/editable/
 COPY views/ /app/views/
 COPY public/ /app/public/
 WORKDIR /app
-EXPOSE 9005
+EXPOSE 80
 ENV NODE_PATH=/app/node_modules
 ENV NODE_ENV=production
 ENV DIR=/app/editable/

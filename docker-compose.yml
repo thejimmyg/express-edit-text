@@ -1,0 +1,61 @@
+version: "3"
+services:
+  gateway:
+    restart: unless-stopped
+    image: thejimmyg/gateway-lite:0.2.5
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./domain:/app/domain:rw
+      - ./letsencrypt:/etc/letsencrypt:rw
+    environment:
+      DEBUG: gateway-lite
+    command: >
+      --https-port 443
+      --port 80
+      --cert domain/www.example.localhost/sni/cert.pem
+      --key domain/www.example.localhost/sni/key.pem
+      --proxy '
+        www.example.localhost:
+          - ["/user", "signin:8000/user", {"limit": "100mb"}]
+          - ["/edit", "edit:80/edit", {"limit": "100mb"}]
+      '
+      --domain domain
+    links:
+      - edit:edit
+      - signin:signin
+  signin:
+    restart: unless-stopped
+    image: thejimmyg/express-mustache-jwt-signin:0.2.6
+    expose:
+      - 8000
+    environment:
+      SECRET: a3707b31-0319-4b16-90b9-75aeff33752d
+      DEBUG: "express-mustache-jwt-signin,express-mustache-overlays"
+      PORT: 8000
+      SCRIPT_NAME: /user
+      DASHBOARD_URL: /edit
+      # Add this if you want to customise the sign in templates
+      # MUSTACHE_DIRS: /app/views-signin
+    volumes:
+      - ./users:/app/yaml:ro
+      # Add this if you want to customise the sign in templates
+      # - ./views-signin:/app/views-signin:ro
+  edit:
+    restart: unless-stopped
+    build: ./
+    # image: thejimmyg/express-file-editer:0.1.1
+    expose:
+      - 80
+    environment:
+      SECRET: a3707b31-0319-4b16-90b9-75aeff33752d
+      DEBUG: "express-file-editer,express-mustache-jwt-signin,express-mustache-overlays"
+      DIR: /app/edit
+      SCRIPT_NAME: /edit
+      PORT: 80
+      SIGN_IN_URL: /user/signin
+      MUSTACHE_DIRS: /app/views-edit
+    volumes:
+      - ./edit:/app/edit:rw
+      - ./views-edit:/app/views-edit:ro

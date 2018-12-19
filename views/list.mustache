@@ -1,10 +1,23 @@
 {{>top}}
       <div class="p-3 flex-grow-1">
-        <h1>List</h1>
+        <h1>Edit Text Files</h1>
+
+        <h2>New File</h2>
+
+        <form action="{{scriptName}}/edit" method="GET">
+          <div class="form-group">
+            <label for="username">New filename:</label>
+            <input class="form-control" type="text" placeholder="Filename" name="filename">
+          </div>
+          <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+
+        <h2>Existing Files</h2>
         <ul>
           {{#files}}
           <li><a href="{{url}}">{{{name}}}<a></li>
           {{/files}}
         </ul>
+
       </div>
 {{>bottom}}
