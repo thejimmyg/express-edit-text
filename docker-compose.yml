@@ -36,12 +36,12 @@ services:
       PORT: 8000
       SCRIPT_NAME: /user
       DASHBOARD_URL: /
-      # Add this if you want to customise the sign in templates
-      # MUSTACHE_DIRS: /app/views-signin
+      # Add this if you want to share the sign in templates with edit
+      # MUSTACHE_DIRS: /app/views-edit
     volumes:
       - ./users:/app/yaml:ro
-      # Add this if you want to customise the sign in templates
-      # - ./views-signin:/app/views-signin:ro
+      # Add this if you want to share the sign in templates with edit
+      # - ./views-edit:/app/views-edit:ro
   edit:
     restart: unless-stopped
     build: ./
