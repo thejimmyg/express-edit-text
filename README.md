@@ -130,6 +130,10 @@ npm run fix
 
 ## Changelog
 
+### 0.1.6 2018-12-20
+
+* Upgrade `express-mustache-jwt-signin`
+
 ### 0.1.5 2018-12-20
 
 * Fixed incorrect logger name in `docker-compose.yml`

@@ -10,7 +10,6 @@
     "docker:run:local": "docker-compose stop && docker-compose pull && docker-compose up --build -d",
     "docker:stop:local": "docker-compose stop",
     "docker:logs:local": "docker-compose logs --tail='all' -f",
-    "docker:stop:local": "docker-compose stop",
     "start": "node bin/server.js",
     "fix": "standard --fix index.js bin/*.js lib/*.js"
   },
@@ -19,7 +18,7 @@
   "dependencies": {
     "debug": "^4.1.0",
     "express": "^4.16.4",
-    "express-mustache-jwt-signin": "^0.3.0",
+    "express-mustache-jwt-signin": "^0.3.1",
     "express-mustache-overlays": "^0.3.0",
     "shelljs": "^0.8.3"
   },
