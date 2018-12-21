@@ -87,6 +87,8 @@ As long as the user you sign in with has the `admin: true` claim in the `users/u
 
 Make any tweaks to templates in `views-edit` so that the defaults aren't affected. You can copy the defaults in the `views` directory as a starting point, but make sure you keep the same names.
 
+You can also check the `PUBLIC_FILES_DIRS` overlay at https://www.example.localhost/user/public/hello.txt
+
 When you are finished you can stop the containers with the command below, otherwise Docker will automatically restart them each time you reboot (which is what you want in production, but perhaps not when you are developing):
 
 ```
@@ -133,9 +135,9 @@ npm run fix
 ### 0.1.6 2018-12-20
 
 * Upgrade `express-mustache-jwt-signin`
+* Unify navigation and public files
 
 ### 0.1.5 2018-12-20
-
 * Fixed incorrect logger name in `docker-compose.yml`
 * Fixed a bug with order of directories applied from `MUSTACHE_DIRS` and `PUBLIC_FILES_DIRS`
 * Changed the docker example so that the app is hosted at `/`

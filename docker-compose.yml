@@ -37,11 +37,11 @@ services:
       SCRIPT_NAME: /user
       DASHBOARD_URL: /
       # Add this if you want to share the sign in templates with edit
-      # MUSTACHE_DIRS: /app/views-edit
+      MUSTACHE_DIRS: /app/views-edit
     volumes:
       - ./users:/app/yaml:ro
       # Add this if you want to share the sign in templates with edit
-      # - ./views-edit:/app/views-edit:ro
+      - ./views-edit:/app/views-edit:ro
   edit:
     restart: unless-stopped
     build: ./
@@ -55,9 +55,11 @@ services:
       PORT: 80
       SIGN_IN_URL: /user/signin
       MUSTACHE_DIRS: /app/views-edit
+      PUBLIC_FILES_DIRS: /app/public-edit
     volumes:
       - ./edit:/app/edit:rw
       - ./views-edit:/app/views-edit:ro
+      - ./public-edit:/app/public-edit:ro
       # If you are working on multiple node modules that don't require compiling, you can always mount them in for debugging:
       # - /Users/james/Desktop/jimmyg/git/express-mustache-overlays:/app/node_modules/express-mustache-overlays:ro
       # - /Users/james/Desktop/jimmyg/git/express-mustache-jwt-signin:/app/node_modules/express-mustache-jwt-signin:ro
