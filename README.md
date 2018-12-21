@@ -29,7 +29,7 @@ git clone https://github.com/thejimmyg/express-edit-text.git
 cd express-edit-text
 ```
 
-**Tip: You can also use the published docker image at https://cloud.docker.com/u/thejimmyg/repository/docker/thejimmyg/express-edit-text if you change the `docker-compose.yml` file to use `image: thejimmyg/express-edit-text:0.1.3` instead of building from source**
+**Tip: You can also use the published docker image at https://cloud.docker.com/u/thejimmyg/repository/docker/thejimmyg/express-edit-text if you change the `docker-compose.yml` file to use `image: thejimmyg/express-edit-text:0.1.4` instead of building from source**
 
 OK, let's begin.
 
@@ -81,13 +81,11 @@ You can now run the containers with:
 npm run docker:run:local
 ```
 
-Visit https://www.example.localhost/edit. You'll probably need to get your browser to accept the certficate since it is a self-signed one, then you'll be asked to sign in using the credentials in `users/users.yml`.
+Visit https://www.example.localhost/. You'll probably need to get your browser to accept the certficate since it is a self-signed one, then you'll be asked to sign in using the credentials in `users/users.yml`.
 
 As long as the user you sign in with has the `admin: true` claim in the `users/users.yaml` file, you should be able to edit text files.
 
 Make any tweaks to templates in `views-edit` so that the defaults aren't affected. You can copy the defaults in the `views` directory as a starting point, but make sure you keep the same names.
-
-If you see `Cannot GET /` it is because you visited `/` and no route is set up by default in `gateway-lite` for `/`, only `/edit` and `/user` are proxied to.
 
 When you are finished you can stop the containers with the command below, otherwise Docker will automatically restart them each time you reboot (which is what you want in production, but perhaps not when you are developing):
 
@@ -101,10 +99,10 @@ npm run docker:stop:local
 
 ```
 npm install
-DISABLE_AUTH=true SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-jwt-signin DIR=edit PORT=9006 SECRET='reallysecret' npm start
+DISABLE_AUTH=true SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-jwt-signin DIR=edit PORT=8000 SECRET='reallysecret' npm start
 ```
 
-Visit http://localhost:9006.
+Visit http://localhost:8000.
 
 You should be able to make requests to routes restricted with `signedIn`
 middleware as long as you have the cookie, or use the JWT in an `Authorization
@@ -129,16 +127,19 @@ a 404 page.
 npm run fix
 ```
 
-## Docker
-
-```
-npm run docker:build
-docker login <REGISTRY_URL>
-npm run docker:push
-npm run docker:run
-```
 
 ## Changelog
+
+### 0.1.5 2018-12-20
+
+* Fixed incorrect logger name in `docker-compose.yml`
+* Fixed a bug with order of directories applied from `MUSTACHE_DIRS` and `PUBLIC_FILES_DIRS`
+* Changed the docker example so that the app is hosted at `/`
+
+### 0.1.4 2018-12-20
+
+* Upgraded to `express-mustache-jwt-signin` 0.3.0
+* Fixed a bug with `SIGN_IN_URL`
 
 ### 0.1.3 2018-12-19
 
