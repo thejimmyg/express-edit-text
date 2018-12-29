@@ -101,7 +101,7 @@ npm run docker:stop:local
 
 ```
 npm install
-DISABLE_AUTH=true SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-jwt-signin DIR=edit PORT=8000 SECRET='reallysecret' npm start
+DISABLE_AUTH=true SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-overlays,express-mustache-jwt-signin DIR=edit PORT=8000 SECRET='reallysecret' npm start
 ```
 
 Visit http://localhost:8000.
@@ -131,6 +131,10 @@ npm run fix
 
 
 ## Changelog
+
+### 0.1.7 2018-12-29
+
+* Automatically create directories if they are needed.
 
 ### 0.1.6 2018-12-20
 

@@ -10,6 +10,7 @@ const { setupMiddleware } = require('express-mustache-jwt-signin')
 const { promisify } = require('util')
 
 const readFileAsync = promisify(fs.readFile)
+const lstatAsync = promisify(fs.lstat)
 const writeFileAsync = promisify(fs.writeFile)
 
 const port = process.env.PORT || 80
@@ -86,15 +87,18 @@ const main = async () => {
   app.get(scriptName, signedIn, async (req, res, next) => {
     try {
       debug('Edit / handler')
-      const ls = shell.ls(editableDir)
+      const ls = shell.ls('-R', editableDir)
       if (shell.error()) {
         throw new Error('Could not list ' + editableDir)
       }
       const files = []
       for (let filename of ls) {
-        files.push({ name: filename, url: scriptName + '/edit?filename=' + encodeURIComponent(filename) })
+        const stat = await lstatAsync(path.join(editableDir, filename))
+        if (stat.isFile()) {
+          files.push({ name: filename, url: scriptName + '/edit?filename=' + encodeURIComponent(filename) })
+        }
       }
-      res.render('list', { user: req.user, scriptName, title: listTitle, files })
+      res.render('list', { title: listTitle, files })
     } catch (e) {
       debug(e)
       next(e)
@@ -117,15 +121,18 @@ const main = async () => {
       const filename = req.query['filename']
       debug(filename)
       const filePath = path.join(editableDir, filename)
-      // XXX Check directory
       const expected = path.normalize(editableDir)
       if (!path.normalize(filePath).startsWith(expected + '/')) {
         throw new Error('Requested file is not in the editable directory: ' + filePath)
       }
       debug(filePath)
+      shell.mkdir('-p', path.dirname(filePath))
+      if (shell.error()) {
+        throw new Error(`Could not create directories for ${filePath}.`)
+      }
       let editError = ''
       let editSuccess = ''
-      const action = req.path
+      const action = '.'
       let content = ''
       if (req.method === 'POST') {
         content = req.body.content
@@ -138,7 +145,7 @@ const main = async () => {
           error = true
         }
         if (error) {
-          res.render('edit', { user: req.user, title: 'Success', scriptName, content, editError, action, filename })
+          res.render('edit', { title: 'Error', content, editError, action, filename })
           return
         } else {
           editSuccess = 'File saved.'
@@ -153,7 +160,7 @@ const main = async () => {
         }
         debug(content)
       }
-      res.render('edit', { user: req.user, title: editTitle, scriptName, editSuccess, content, filename })
+      res.render('edit', { title: editTitle, editSuccess, content, filename })
     } catch (e) {
       debug(e)
       next(e)

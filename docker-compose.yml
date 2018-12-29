@@ -27,7 +27,7 @@ services:
       - signin:signin
   signin:
     restart: unless-stopped
-    image: thejimmyg/express-mustache-jwt-signin:0.3.1
+    image: thejimmyg/express-mustache-jwt-signin:0.3.2
     expose:
       - 8000
     environment:
