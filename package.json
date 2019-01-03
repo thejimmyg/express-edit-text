@@ -1,10 +1,10 @@
 {
   "name": "express-edit-text",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Edit text files in a directory",
   "scripts": {
-    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.7",
-    "docker:push": "docker push thejimmyg/express-edit-text:0.1.7",
+    "docker:build": "docker build . -t thejimmyg/express-edit-text:0.1.8",
+    "docker:push": "docker push thejimmyg/express-edit-text:0.1.8",
     "docker:build:test": "docker build . -t thejimmyg/express-edit-text:test",
     "docker:push:test": "docker push thejimmyg/express-edit-text:test",
     "docker:run:local": "docker-compose stop && docker-compose pull && docker-compose up --build -d",

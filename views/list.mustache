@@ -6,7 +6,7 @@
 
         <form action="{{scriptName}}/edit" method="GET">
           <div class="form-group">
-            <label for="username">New filename:</label>
+            <label for="filename">New filename:</label>
             <input class="form-control" type="text" placeholder="Filename" name="filename">
           </div>
           <button class="btn btn-primary" type="submit">Create</button>
@@ -15,7 +15,7 @@
         <h2>Existing Files</h2>
         <ul>
           {{#files}}
-          <li><a href="{{url}}">{{{name}}}<a></li>
+          <li><a href="{{url}}">{{name}}<a></li>
           {{/files}}
         </ul>
 
