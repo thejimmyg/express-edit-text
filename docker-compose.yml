@@ -2,7 +2,7 @@ version: "3"
 services:
   gateway:
     restart: unless-stopped
-    image: thejimmyg/gateway-lite:0.2.5
+    image: thejimmyg/gateway-lite:0.2.8
     ports:
       - "80:80"
       - "443:443"
@@ -27,7 +27,7 @@ services:
       - signin:signin
   signin:
     restart: unless-stopped
-    image: thejimmyg/express-mustache-jwt-signin:0.3.2
+    image: thejimmyg/express-mustache-jwt-signin:0.3.3
     expose:
       - 8000
     environment:
@@ -56,8 +56,10 @@ services:
       SIGN_IN_URL: /user/signin
       MUSTACHE_DIRS: /app/views-edit
       PUBLIC_FILES_DIRS: /app/public-edit
+      VALIDATION_MODULE_PATH: /app/validation/validator.js
     volumes:
       - ./edit:/app/edit:rw
+      - ./validation:/app/validation:ro
       - ./views-edit:/app/views-edit:ro
       - ./public-edit:/app/public-edit:ro
       # If you are working on multiple node modules that don't require compiling, you can always mount them in for debugging:

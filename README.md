@@ -11,10 +11,12 @@ You configure the container by setting environment variables:
 * `DIR` - The directory containing the editable text files
 * `MUSTACHE_DIRS` - A `:` separated list of paths the system should look for mustache templates before using its default ones.
 * `DISABLE_AUTH` - Defaults to `false` but can be `true` to make file uploading and downloading work without requiring sign in. Only recommended for development.
+* `DISABLED_AUTH_USER` - If `DISABLE_AUTH` is set to `true`, set this to be the JSON-encoded representation of the auth user you want the server to assume is signed in. e.g. `'{"admin": true, "username": "disableduser"}'`. Only recommended for development.
 * `SCRIPT_NAME` - The base URL at which the app is hosted. Defaults to `""` and must not end with `/`. Usually this is set to something like `/upload`
 * `DEBUG` - The loggers you want to see log output for. e.g. `express-edit-text,express-mustache-jwt-signin`.
 * `PORT` - The port you would like the app to run on. Defaults to 80.
 * `SECRET` - The secret string used to sign cookies. Make sure this is a long secret that no-one else knows, otherwise they could forge the user information in your cookies. Make sure you set the `SECRET` variable to the same value in the `signin` container too, otherwise they won't recognose each other's cookies.
+* `VALIDATION_MODULE_PATH` - An optional absolute path of a `.js` file that exports a validator function with this structure:  `module.exports = { validator: async (filename, content, editableDir) => {} }`. `filename` is the file's filename relative to `edtiableDir` and `content` is the content that the user is trying to save. If the content is not valid an error should be thrown with `const e = new Error(msg); e.validationErrorMessage='Public message to display to the user'; throw e;`
 
 ## Docker Example
 
@@ -101,7 +103,7 @@ npm run docker:stop:local
 
 ```
 npm install
-DISABLE_AUTH=true DISABLED_AUTH_USER='{"admin": true, "username": "disableduser"}' SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-overlays,express-mustache-jwt-signin DIR=edit PORT=8000 SECRET='reallysecret' npm start
+VALIDATION_MODULE_PATH=`pwd`/validation/validator.js DISABLE_AUTH=true DISABLED_AUTH_USER='{"admin": true, "username": "disableduser"}' SIGN_IN_URL=/user/signin SCRIPT_NAME="" DEBUG=express-edit-text,express-mustache-overlays,express-mustache-jwt-signin DIR=edit PORT=8000 SECRET='reallysecret' npm start
 ```
 
 Visit http://localhost:8000.
@@ -131,6 +133,12 @@ npm run fix
 
 
 ## Changelog
+
+### 0.1.9 2019-01-04
+
+* Upgraded express-mustache-overlays (to make use of the `debug` option) and express-mustache-jwt-signin
+* Support pluggable validation of the text files via `VALIDATION_MODULE_PATH`
+* `npm run docker:run:local` now does the pull before the stop
 
 ### 0.1.8 2019-01-02
 

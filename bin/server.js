@@ -42,6 +42,12 @@ const publicFilesDirs = process.env.PUBLIC_FILES_DIRS ? process.env.PUBLIC_FILES
 const publicURLPath = process.env.PUBLIC_URL_PATH || scriptName + '/public'
 const listTitle = process.env.LIST_TITLE || 'Edit Text Files'
 const editTitle = process.env.EDIT_TITLE || 'Editing'
+let validator = async (filename, content, editableDir) => {
+}
+if (process.env.VALIDATION_MODULE_PATH) {
+  debug(`Using the validator() async funtion exported as the 'validator' key from '${process.env.VALIDATION_MODULE_PATH}'`)
+  validator = require(process.env.VALIDATION_MODULE_PATH).validator
+}
 
 const main = async () => {
   const app = express()
@@ -98,15 +104,6 @@ const main = async () => {
     }
   })
 
-  // app.all(scriptName + '/throw', signedIn, hasClaims(claims => claims.admin), async (req, res, next) => {
-  //   try {
-  //     throw new Error('test')
-  //   } catch (e) {
-  //     next(e)
-  //     return
-  //   }
-  // })
-
   app.all(scriptName + '/edit', signedIn, hasClaims(claims => claims.admin), async (req, res, next) => {
     try {
       debug('Edit edit/* handler')
@@ -131,9 +128,14 @@ const main = async () => {
         content = req.body.content
         let error = false
         try {
+          await validator(filename, content, editableDir)
           await writeFileAsync(filePath, content, { encoding: 'UTF-8' })
         } catch (e) {
-          editError = 'Could not save the file'
+          if (e.validationErrorMessage) {
+            editError = e.validationErrorMessage
+          } else {
+            editError = 'Could not save the file'
+          }
           debug(e.toString())
           error = true
         }
@@ -162,7 +164,7 @@ const main = async () => {
 
   await overlays.setup()
 
-  setupErrorHandlers(app)
+  setupErrorHandlers(app, { debug })
 
   app.listen(port, () => console.log(`Example app listening on port ${port}`))
 }
