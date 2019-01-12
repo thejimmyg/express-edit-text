@@ -134,6 +134,14 @@ npm run fix
 
 ## Changelog
 
+### 0.1.11 2019-01-12
+
+* Upgraded express-mustache-overlays (to use the env parsing functions)
+
+### 0.1.10 2019-01-12
+
+* Upgraded express-mustache-overlays (to add PWA support)
+
 ### 0.1.9 2019-01-04
 
 * Upgraded express-mustache-overlays (to make use of the `debug` option) and express-mustache-jwt-signin

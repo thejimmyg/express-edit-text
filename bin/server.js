@@ -4,7 +4,7 @@ const debug = require('debug')('express-edit-text')
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const { prepareMustacheOverlays, setupErrorHandlers } = require('express-mustache-overlays')
+const { overlaysOptionsFromEnv, overlaysDirsFromEnv, prepareMustacheOverlays, setupErrorHandlers } = require('express-mustache-overlays')
 const shell = require('shelljs')
 const { makeStaticWithUser, setupMiddleware } = require('express-mustache-jwt-signin')
 const { promisify } = require('util')
@@ -14,10 +14,11 @@ const lstatAsync = promisify(fs.lstat)
 const writeFileAsync = promisify(fs.writeFile)
 
 const port = process.env.PORT || 80
-const scriptName = process.env.SCRIPT_NAME || ''
-if (scriptName.endsWith('/')) {
-  throw new Error('SCRIPT_NAME should not end with /.')
-}
+
+const overlaysOptions = overlaysOptionsFromEnv()
+const { scriptName, publicURLPath } = overlaysOptions
+const { mustacheDirs, publicFilesDirs } = overlaysDirsFromEnv()
+
 const editableDir = process.env.DIR
 if (!editableDir) {
   throw new Error('No DIR environment variable set to specify the path of the editable files.')
@@ -37,9 +38,7 @@ if (!disableAuth) {
   debug('Disabled auth')
 }
 const disabledAuthUser = process.env.DISABLED_AUTH_USER
-const mustacheDirs = process.env.MUSTACHE_DIRS ? process.env.MUSTACHE_DIRS.split(':') : []
-const publicFilesDirs = process.env.PUBLIC_FILES_DIRS ? process.env.PUBLIC_FILES_DIRS.split(':') : []
-const publicURLPath = process.env.PUBLIC_URL_PATH || scriptName + '/public'
+
 const listTitle = process.env.LIST_TITLE || 'Edit Text Files'
 const editTitle = process.env.EDIT_TITLE || 'Editing'
 let validator = async (filename, content, editableDir) => {
@@ -53,11 +52,11 @@ const main = async () => {
   const app = express()
   app.use(cookieParser())
 
-  const overlays = await prepareMustacheOverlays(app, { scriptName, publicURLPath })
+  const overlays = await prepareMustacheOverlays(app, overlaysOptions)
 
   app.use((req, res, next) => {
     debug('Setting up locals')
-    res.locals = Object.assign({}, res.locals, { publicURLPath, scriptName, title: 'Express Edit Text', signOutURL: signOutURL, signInURL: signInURL })
+    res.locals = Object.assign({}, res.locals, overlaysOptions, { title: 'Express Edit Text', signOutURL: signOutURL, signInURL: signInURL })
     next()
   })
 
@@ -83,6 +82,25 @@ const main = async () => {
   })
 
   app.use(bodyParser.urlencoded({ extended: true }))
+
+  app.get(scriptName + '/offline', async (req, res, next) => {
+    try {
+      res.render('content', { title: 'Offline', content: '<h1>Offline</h1><p>You are currently offline</p>' })
+    } catch (e) {
+      debug(e)
+      next(e)
+    }
+  })
+
+  app.get(scriptName + '/start', async (req, res, next) => {
+    try {
+      res.render('content', { title: 'Start', content: '<h1>Start</h1><p>Please use the navitation at the top to start.</p>' })
+    } catch (e) {
+      debug(e)
+      next(e)
+    }
+  })
+
   app.get(scriptName, signedIn, async (req, res, next) => {
     try {
       debug('Edit / handler')
