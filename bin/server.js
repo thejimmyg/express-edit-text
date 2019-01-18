@@ -83,24 +83,6 @@ const main = async () => {
 
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  app.get(scriptName + '/offline', async (req, res, next) => {
-    try {
-      res.render('content', { title: 'Offline', content: '<h1>Offline</h1><p>You are currently offline</p>' })
-    } catch (e) {
-      debug(e)
-      next(e)
-    }
-  })
-
-  app.get(scriptName + '/start', async (req, res, next) => {
-    try {
-      res.render('content', { title: 'Start', content: '<h1>Start</h1><p>Please use the navitation at the top to start.</p>' })
-    } catch (e) {
-      debug(e)
-      next(e)
-    }
-  })
-
   app.get(scriptName, signedIn, async (req, res, next) => {
     try {
       debug('Edit / handler')

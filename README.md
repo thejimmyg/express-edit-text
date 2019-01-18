@@ -134,6 +134,10 @@ npm run fix
 
 ## Changelog
 
+### 0.1.12 2019-01-18
+
+* Upgraded express-mustache-overlays again, removed the `/offline` and `/start` routes as they are provided by express-mustache-overlays now.
+
 ### 0.1.11 2019-01-12
 
 * Upgraded express-mustache-overlays (to use the env parsing functions)
