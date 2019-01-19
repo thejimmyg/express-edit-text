@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const { overlaysOptionsFromEnv, overlaysDirsFromEnv, prepareMustacheOverlays, setupErrorHandlers } = require('express-mustache-overlays')
 const shell = require('shelljs')
-const { makeStaticWithUser, setupMiddleware } = require('express-mustache-jwt-signin')
+const { makeStaticWithUser, setupMiddleware, signInOptionsFromEnv } = require('express-mustache-jwt-signin')
 const { promisify } = require('util')
 
 const readFileAsync = promisify(fs.readFile)
@@ -16,23 +16,27 @@ const writeFileAsync = promisify(fs.writeFile)
 const port = process.env.PORT || 80
 
 const overlaysOptions = overlaysOptionsFromEnv()
-const { scriptName, publicURLPath } = overlaysOptions
+const { scriptName } = overlaysOptions
 const { mustacheDirs, publicFilesDirs } = overlaysDirsFromEnv()
+const signInOptions = signInOptionsFromEnv(scriptName)
+const { signInUrl, signOutUrl } = signInOptions
+const secret = process.env.SECRET
 
 const editableDir = process.env.DIR
 if (!editableDir) {
   throw new Error('No DIR environment variable set to specify the path of the editable files.')
 }
-const secret = process.env.SECRET
-const signInURL = process.env.SIGN_IN_URL || '/user/signin'
-const signOutURL = process.env.SIGN_OUT_URL || '/user/signout'
+
 const disableAuth = ((process.env.DISABLE_AUTH || 'false').toLowerCase() === 'true')
 if (!disableAuth) {
   if (!secret || secret.length < 8) {
     throw new Error('No SECRET environment variable set, or the SECRET is too short. Need 8 characters')
   }
-  if (!signInURL) {
+  if (!signInUrl) {
     throw new Error('No SIGN_IN_URL environment variable set')
+  }
+  if (!signOutUrl) {
+    throw new Error('No SIGN_OUT_URL environment variable set')
   }
 } else {
   debug('Disabled auth')
@@ -54,13 +58,7 @@ const main = async () => {
 
   const overlays = await prepareMustacheOverlays(app, overlaysOptions)
 
-  app.use((req, res, next) => {
-    debug('Setting up locals')
-    res.locals = Object.assign({}, res.locals, overlaysOptions, { title: 'Express Edit Text', signOutURL: signOutURL, signInURL: signInURL })
-    next()
-  })
-
-  const authMiddleware = await setupMiddleware(app, secret, { overlays, signOutURL, signInURL })
+  const authMiddleware = await setupMiddleware(app, secret, Object.assign({ overlays }, signInOptions))
   const { signedIn, hasClaims } = authMiddleware
   let { withUser } = authMiddleware
   if (disableAuth) {
@@ -164,7 +162,7 @@ const main = async () => {
 
   await overlays.setup()
 
-  setupErrorHandlers(app, { debug })
+  await setupErrorHandlers(app, { debug })
 
   app.listen(port, () => console.log(`Example app listening on port ${port}`))
 }
