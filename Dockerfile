@@ -11,6 +11,7 @@ FROM base
 
 COPY --from=builder /app /app
 COPY bin/ /app/bin/
+COPY lib/ /app/lib/
 # You can mount your real `/app/editable` volume when running docker
 RUN mkdir -p /app/editable/
 COPY views/ /app/views/

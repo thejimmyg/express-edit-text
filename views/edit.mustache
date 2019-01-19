@@ -7,10 +7,11 @@
         {{#editSuccess}}
         <div class="alert alert-success">{{editSuccess}}</div>
         {{/editSuccess}}
-        <form method="POST" action="{{action}}">
+        <form id="data-pjax" method="POST" action="{{action}}">
           <div class="form-group">
-            <label for="content">Content:</label>
+            <label>Content:</label>
             <textarea rows="10" class="form-control" name="content">{{content}}</textarea>
+            <input type="hidden" name="filename" value="{{filename}}">
           </div>
           <button class="btn btn-primary" type="submit">Save</button>
         </form>

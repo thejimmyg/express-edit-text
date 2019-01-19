@@ -13,14 +13,16 @@
     "start": "node bin/server.js",
     "fix": "standard --fix index.js bin/*.js lib/*.js"
   },
+  "main": "./lib/index.js",
   "author": "JimmyG",
   "license": "MIT",
   "dependencies": {
+    "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.3",
     "debug": "^4.1.0",
     "express": "^4.16.4",
     "express-mustache-jwt-signin": "^0.4.0",
-    "express-mustache-overlays": "^0.4.2",
+    "express-mustache-overlays": "^0.4.3",
     "shelljs": "^0.8.3"
   },
   "repository": {

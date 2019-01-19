@@ -1,0 +1,7 @@
+$(document).ready(function() {
+  console.log('Installing pjax click handler...')
+  $(document).on('submit', '#data-pjax', function(event) {
+    console.log('Sending with pjax ...')
+    $.pjax.submit(event, '#pjax-container', { "fragment": "#pjax-container", timeout: 4000 })
+  })
+})
